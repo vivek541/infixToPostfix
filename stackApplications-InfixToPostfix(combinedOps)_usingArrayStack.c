@@ -3,8 +3,8 @@
 #include<math.h>
 #include<stdlib.h>
 #define MAX 100
-/*WAP to convert a given infix expression to its equivalent postfix form and print it
-  also, print the value obtained after evaluating the postfix expression so obtained*/
+/*WAP to convert a given infix expression to its equivalent postfix form 
+and print the value obtained after evaluating the postfix expression so obtained*/
 
 //global stuff...
 char infix[MAX], postfix[MAX];
@@ -12,19 +12,16 @@ char stack[MAX];
 int top = -1;
 
 bool isEmpty(){
-
     if(top == -1) return true;
     else          return false;
 }
 
 bool isFull(){
-
     if(top == MAX-1) return true;
     else             return false;
 }
 
 void push(char data){
-
     if(isFull()){
         printf("stack overflow!!\n");
         exit(1);
@@ -34,26 +31,20 @@ void push(char data){
         stack[top] = data;
     }
 }
-
 char pop(){
-
     if(isEmpty()){
         printf("stack underflow!!\n");
         exit(2);
     }
     else{
-
         char retVal = stack[top];
         top--;
-
         return retVal;
     }
 }
 
-int precedence(char symbol){  //AWESOME precedence checking function:)
-
+int precedence(char symbol){  //precedence checking function
     switch(symbol){
-
     case '^' :
         return 3;
     case '*' :
@@ -74,46 +65,32 @@ void infixToPostfix(){
 
     //1. main.....................................................................................................
 
-    while(infix[i] != '\0'){
+    while(infix[i] != '\0'){ //scanning the infix expression form L to R
 
         sym = infix[i];
 
-        if(sym == ' ' || sym == '\t'){i++; continue;}  /*to bypass spaces and tabs*/
+        if(sym == ' ' || sym == '\t'){i++; continue;}  //to bypass spaces and tabs
 
         if(sym >= '0' && sym <= '9' ||
            sym >= 'a' && sym <= 'z' ||
-           sym >= 'A' && sym <= 'Z'){                  /**CASE1 -> when sym is an operand*/
+           sym >= 'A' && sym <= 'Z'){                  //CASE1 -> when sym is an operand
             postfix[k++] = sym;
         }
-        else if(sym == '('){                           /**CASE2 -> when sym is '(' */
+        else if(sym == '('){                           //CASE2 -> when sym is '(' 
             push(sym);
         }
-        else if(sym == ')'){                           /**CASE3 -> when sym is ')' */
+        else if(sym == ')'){                           //CASE3 -> when sym is ')'
             while(!isEmpty() && stack[top] != '('){
                 postfix[k++] = pop();
             }
             pop(); /*to discard '('*/
         }
-        else{                                          /**CASE4 -> when sym is an operator*/
-
-//            int topBckp = top;    /*note that we can't use org top for iterating the stack*/
-//
-//            while(topBckp != -1 && stack[topBckp] != '('){
-//                if(precedence(sym) <= precedence(stack[topBckp])){  /*precedence check as per the algorithm*/
-//                    postfix[k++] = pop();
-//                    topBckp = top;          /*VIMP**/
-//                }
-//                else topBckp--;             /*VIMP**/
-//            }
-//            push(sym);
-
+        else{                                          //CASE4 -> when sym is an operator
             while (!isEmpty() && stack[top] != '(' && precedence(sym) <= precedence(stack[top])) {
                 postfix[k++] = pop();
             }
             push(sym);
-
         }
-
         i++;
     }
 
@@ -153,27 +130,20 @@ void evaluatePostfix(){
 }
 
 int main(){
-
+  
+    //getting the infix expr.
     printf("enter the infix expression   : ");
     gets(infix);
 
+    //converting it to postfix form
     infixToPostfix();
     printf("\npostfix form               : ");
     puts(postfix);
-/*
+
+    //evaluating the postfix expr. so obtained
     evaluatePostfix();
     printf("\nvalue of the above postfix expression        : %d", stack[top]);
     printf("\n------------------------------------------------------------------------\n");
-*/
+
     return 0;
 }
-
-
-
-
-/*
-7+5*3/5^1+(3-2)
-7+(9-5)*2
-3+5*(5/5)-2^2
-*/
-
